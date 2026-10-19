@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>special website</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Dancing+Script:wght@600&family=Be+Vietnam+Pro:wght@300;400;600&display=swap&subset=vietnamese"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+    <style>
+      :root {
+        --pink: #f48fb1;
+        --rose: #e86a98;
+        --gold: #d9708f;
+        --text: #6b2a48;
+        --serif: "Playfair Display", "Times New Roman", Georgia, serif;
+        --script: "Dancing Script", "Segoe Script", "Brush Script MT", cursive;
+        --sans: "Be Vietnam Pro", "Segoe UI", Roboto, Arial, sans-serif;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+      body {
+        background: radial-gradient(circle at 50% 30%, #fff6f9, #ffdbe8 75%);
+        color: var(--text);
+        font-family: var(--sans);
+      }
+      .glow {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.55;
+        pointer-events: none;
+      }
+      .g1 {
+        width: 50vmax;
+        height: 50vmax;
+        background: #ffb8d1;
+        left: -15vmax;
+        top: -10vmax;
+      }
+      .g2 {
+        width: 40vmax;
+        height: 40vmax;
+        background: #ffd3e4;
+        right: -12vmax;
+        bottom: -10vmax;
+      }
+      .star {
+        position: fixed;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: #f8a5c2;
+        animation: tw 3s infinite alternate;
+        pointer-events: none;
+      }
+      @keyframes tw {
+        from {
+          opacity: 0.1;
+        }
+        to {
+          opacity: 0.9;
+          box-shadow: 0 0 8px #ffb6cf;
+        }
+      }
+      #stage {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        transition:
+          opacity 1s,
+          transform 1s;
+        z-index: 2;
+      }
+      #stage.hide {
+        opacity: 0;
+        transform: scale(0.92);
+        pointer-events: none;
+      }
+      .line {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        font-family: var(--serif);
+        font-weight: 900;
+        line-height: 1.15;
+      }
+      .l1 {
+        font-size: clamp(1.9rem, 8.5vw, 4rem);
+        color: #b4446e;
+      }
+      .word {
+        display: inline-flex;
+        white-space: nowrap;
+      }
+      .l2 {
+        font-size: clamp(2.2rem, 10vw, 5rem);
+        color: #ec6f9d;
+        text-shadow: 0 0 24px rgba(255, 160, 195, 0.7);
+      }
+      .slot {
+        display: inline-block;
+        opacity: 0;
+        filter: blur(6px);
+        min-width: 0.05em;
+        transition:
+          opacity 0.4s,
+          filter 0.4s;
+      }
+      .slot.sp {
+        min-width: 0.35em;
+      }
+      .slot.ok {
+        opacity: 1;
+        animation: pop 0.6s;
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(1.6);
+          filter: brightness(2.5);
+        }
+        100% {
+          transform: none;
+          filter: none;
+        }
+      }
+      .slot.ok {
+        filter: none;
+      }
+      #stage {
+        touch-action: none;
+      }
+      #sub {
+        font-size: 0.85rem;
+        opacity: 0.75;
+        margin-top: -0.4rem;
+      }
+      #hud {
+        position: fixed;
+        top: calc(14px + env(safe-area-inset-top, 0px));
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 6;
+        display: none;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.45rem 1rem;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(244, 143, 177, 0.45);
+        font: 600 0.95rem var(--sans);
+        color: #b4446e;
+        box-shadow: 0 6px 20px rgba(244, 143, 177, 0.3);
+        white-space: nowrap;
+      }
+      #hud.on {
+        display: flex;
+      }
+      #bar {
+        width: 110px;
+        height: 8px;
+        border-radius: 9px;
+        background: #ffe0ea;
+        overflow: hidden;
+      }
+      #bar i {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #f7a1c0, #e86a98);
+        transition: width 0.3s;
+      }
+      #basket {
+        position: fixed;
+        left: 50%;
+        bottom: calc(12vh + env(safe-area-inset-bottom, 0px));
+        z-index: 5;
+        font-size: 58px;
+        line-height: 1;
+        transform: translateX(-50%);
+        pointer-events: none;
+        display: none;
+        filter: drop-shadow(0 6px 10px rgba(214, 82, 127, 0.35));
+      }
+      #basket.on {
+        display: block;
+      }
+      #basket.shake {
+        animation: shake 0.4s;
+      }
+      @keyframes shake {
+        25% {
+          margin-left: -10px;
+        }
+        50% {
+          margin-left: 10px;
+        }
+        75% {
+          margin-left: -6px;
+        }
+      }
+      .drop {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 4;
+        pointer-events: none;
+        will-change: transform;
+        filter: drop-shadow(0 0 6px rgba(244, 143, 177, 0.6));
+      }
+      .pop-txt {
+        position: fixed;
+        z-index: 7;
+        pointer-events: none;
+        font: 600 1rem var(--sans);
+        color: #e86a98;
+        white-space: nowrap;
+        transform: translate(-50%, -50%);
+        animation: rise 0.9s ease-out forwards;
+      }
+      @keyframes rise {
+        to {
+          transform: translate(-50%, -160%);
+          opacity: 0;
+        }
+      }
+      #hint {
+        font-family: var(--script);
+        font-size: 1.6rem;
+        color: var(--gold);
+        animation: pulse 1.6s infinite;
+        margin-top: 1rem;
+        text-align: center;
+        padding: 0 1rem;
+      }
+      @keyframes pulse {
+        50% {
+          opacity: 0.5;
+          transform: scale(1.05);
+        }
+      }
+      #btn,
+      .b2 {
+        padding: 0.85rem 2rem;
+        border: 0;
+        border-radius: 99px;
+        font: 600 1.05rem var(--sans);
+        color: #fff;
+        cursor: pointer;
+        background: linear-gradient(135deg, #f7a1c0, #e86a98);
+        box-shadow: 0 0 24px rgba(244, 143, 177, 0.55);
+        transition: transform 0.2s;
+        z-index: 5;
+      }
+      #btn:hover,
+      .b2:hover {
+        transform: scale(1.07);
+      }
+      .b2.ghost {
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: none;
+        border: 1px solid rgba(255, 182, 213, 0.5);
+      }
+      #card {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 1rem;
+        z-index: 4;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1.2s;
+        overflow-y: auto;
+      }
+      #card.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .box {
+        position: relative;
+        margin: auto;
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+        padding: 1.5rem 1.1rem 1.1rem;
+        border-radius: 24px;
+        background: linear-gradient(
+          160deg,
+          rgba(255, 255, 255, 0.78),
+          rgba(255, 240, 246, 0.55)
+        );
+        border: 1px solid rgba(244, 143, 177, 0.45);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow:
+          0 25px 80px rgba(244, 143, 177, 0.35),
+          inset 0 0 40px rgba(255, 200, 220, 0.25);
+        transform: scale(0.85) translateY(30px);
+        transition: transform 1.2s cubic-bezier(0.2, 1.3, 0.3, 1);
+      }
+      #card.show .box {
+        transform: none;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.25rem 0.8rem;
+        border-radius: 99px;
+        font-size: 0.66rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #8a2f57;
+        font-weight: 600;
+        background: linear-gradient(90deg, #ffe0ea, #ffb6cf);
+        box-shadow: 0 0 20px rgba(255, 182, 207, 0.6);
+      }
+      .big {
+        font-size: 2.1rem;
+        margin: 0.4rem 0 0;
+        animation: beat 1.2s infinite;
+      }
+      @keyframes beat {
+        15% {
+          transform: scale(1.25);
+        }
+        30% {
+          transform: scale(1);
+        }
+        45% {
+          transform: scale(1.18);
+        }
+      }
+      .t1 {
+        font-family: var(--script);
+        font-size: 1.25rem;
+        color: var(--gold);
+        margin: 0;
+      }
+      .t2 {
+        font-family: var(--serif);
+        font-size: clamp(1.7rem, 8vw, 2.4rem);
+        margin: 0 0 0.2rem;
+        background: linear-gradient(
+          90deg,
+          #f48fb1,
+          #e75480,
+          #ffb6cf,
+          #d9608c,
+          #f48fb1
+        );
+        background-size: 250% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: sh 5s linear infinite;
+      }
+      @keyframes sh {
+        to {
+          background-position: -250% 0;
+        }
+      }
+      .orn {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        justify-content: center;
+        color: var(--pink);
+        margin: 0.4rem 0 1rem;
+      }
+      .orn:before,
+      .orn:after {
+        content: "";
+        height: 1px;
+        width: 22%;
+        background: linear-gradient(90deg, transparent, var(--pink));
+      }
+      .orn:after {
+        transform: scaleX(-1);
+      }
+      #msg {
+        font-family: var(--script);
+        font-size: 1.35rem;
+        font-weight: 600;
+        color: #000;
+        line-height: 1.6;
+        min-height: 6.4em;
+        margin: 0 0.3rem;
+      }
+      .wishes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem;
+        margin: 0.8rem 0;
+      }
+      .w {
+        padding: 0.55rem 0.45rem;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(244, 143, 177, 0.35);
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+        transition: all 0.8s cubic-bezier(0.2, 1.4, 0.3, 1);
+      }
+      .w.on {
+        opacity: 1;
+        transform: none;
+      }
+      .w i {
+        font-style: normal;
+        font-size: 1.2rem;
+        display: block;
+      }
+      .w b {
+        display: block;
+        font-family: var(--serif);
+        font-size: 0.82rem;
+        color: #d6527f;
+        margin: 0.2rem 0;
+      }
+      .w span {
+        font-size: 0.68rem;
+        font-weight: 300;
+        opacity: 0.85;
+        line-height: 1.5;
+        display: block;
+      }
+      .quote {
+        font-family: var(--script);
+        font-size: 1.1rem;
+        color: var(--gold);
+        line-height: 1.5;
+        opacity: 0;
+        transition: opacity 1.2s;
+      }
+      .sign {
+        font-family: var(--script);
+        font-size: 1.2rem;
+        color: var(--rose);
+        margin: 0.4rem 0 0.3rem;
+        opacity: 0;
+        transition: opacity 1.2s;
+      }
+      .on2 {
+        opacity: 1;
+      }
+      .btns {
+        display: flex;
+        gap: 0.7rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        opacity: 0;
+        transition: opacity 1s;
+      }
+      .heart {
+        position: fixed;
+        top: -50px;
+        z-index: 1;
+        pointer-events: none;
+        animation: up linear forwards;
+        filter: drop-shadow(0 0 6px rgba(244, 143, 177, 0.6));
+      }
+      @keyframes up {
+        to {
+          transform: translate(var(--dx), 115vh) rotate(var(--rot));
+          opacity: 0;
+        }
+      }
+      .burst {
+        position: fixed;
+        z-index: 9;
+        pointer-events: none;
+        animation: bst 0.9s ease-out forwards;
+      }
+      @keyframes bst {
+        to {
+          transform: translate(var(--bx), var(--by)) scale(0.3);
+          opacity: 0;
+        }
+      }
+      * {
+        cursor: none !important;
+      }
+      #cur {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 99;
+        pointer-events: none;
+        font-size: 26px;
+        color: #f48fb1;
+        text-shadow:
+          0 0 10px #ffb6cf,
+          0 0 22px #ffd3e4;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      #cur span {
+        display: inline-block;
+        animation: beat 1.2s infinite;
+      }
+      .trail {
+        position: fixed;
+        z-index: 98;
+        pointer-events: none;
+        color: #f48fb1;
+        transform: translate(-50%, -50%);
+        animation: tr 1.1s ease-out forwards;
+        text-shadow: 0 0 8px rgba(255, 182, 207, 0.9);
+      }
+      @keyframes tr {
+        to {
+          transform: translate(calc(-50% + var(--tx)), 70px) rotate(120deg) scale(0.4);
+          opacity: 0;
+        }
+      }
+      .photo {
+        position: relative;
+        width: 132px;
+        height: 132px;
+        margin: 0.9rem auto 0.3rem;
+        border-radius: 50%;
+        padding: 4px;
+        background: conic-gradient(#ffc4d6, #ffe6ee, #f48fb1, #ffb6cf, #ffc4d6);
+        box-shadow: 0 0 30px rgba(244, 143, 177, 0.6);
+        animation: spin 8s linear infinite;
+      }
+      .photo img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        border: 3px solid #fff;
+        animation: spin 8s linear infinite reverse;
+      }
+      .photo span {
+        position: absolute;
+        right: -2px;
+        bottom: 2px;
+        font-size: 1.7rem;
+        animation: beat 1.2s infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.6rem;
+        margin: 0.4rem 0 0.9rem;
+      }
+      .pol {
+        width: 30%;
+        min-width: 90px;
+        padding: 5px 5px 18px;
+        background: #fff;
+        border-radius: 4px;
+        box-shadow: 0 8px 22px rgba(214, 82, 127, 0.25);
+        opacity: 0;
+        transform: translateY(20px) rotate(var(--r));
+        transition: all 0.8s cubic-bezier(0.2, 1.4, 0.3, 1);
+      }
+      .pol.on {
+        opacity: 1;
+        transform: rotate(var(--r));
+      }
+      .pol img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        display: block;
+      }
+      #lb {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 235, 242, 0.9);
+        padding: 1rem;
+      }
+      #lb.show {
+        display: flex;
+      }
+      #lb img {
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: 12px;
+        box-shadow: 0 0 60px rgba(244, 143, 177, 0.7);
+      }
+      .btns small {
+        font-size: 0.7rem;
+        opacity: 0.65;
+        letter-spacing: 0.06em;
+        font-weight: 300;
+      }
+
+      /* ===== Nút bỏ qua ===== */
+      #skipBox {
+        position: fixed;
+        bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+        right: 10px;
+        z-index: 8;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25rem;
+        width: max-content;
+        max-width: 60vw;
+        text-align: right;
+        font-size: 0.62rem;
+        line-height: 1.3;
+        opacity: 0.7;
+      }
+      #skipBtn {
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        border: 1px solid rgba(244, 143, 177, 0.6);
+        background: rgba(255, 255, 255, 0.8);
+        color: #b4446e;
+        font: 600 0.8rem var(--sans);
+      }
+      /* web đang ẩn con trỏ chuột nên bật lại cho nút này */
+      #skipBox,
+      #skipBox * {
+        cursor: pointer !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+
+    <div id="stage">
+      <div class="line l1" id="l1"></div>
+      <div class="line l2" id="l2"></div>
+      <div id="hint"></div>
+      <button id="btn">Bắt đầu hứng hoa 🧺</button>
+      <div id="sub">Cẩn thận đừng hứng phải sâu 🐛 nhé!</div>
+    </div>
+    <div id="hud">
+      <span>🌸 <b id="count">0</b> / <span id="goal"></span></span>
+      <div id="bar"><i></i></div>
+    </div>
+    <div id="basket">🧺</div>
+
+    <div id="skipBox">
+      <span>Nếu bé thấy mệt quá thì có thể bấm nút này để bỏ qua nha :v</span>
+      <button id="skipBtn">Bỏ qua ⏭</button>
+    </div>
+
+    <div id="card">
+      <div class="box">
+        <span class="badge">20 · 10 &nbsp;Ngày Phụ nữ Việt Nam</span>
+        <div class="photo" id="photo" hidden>
+          <img id="pimg" alt="" /><span>🌸</span>
+        </div>
+        <div class="big" id="big">🌸</div>
+        <p class="t1">Gửi riêng cho</p>
+        <h1 class="t2" id="name"></h1>
+        <div class="orn">❀ 🌸 ❀</div>
+        <div id="msg"></div>
+        <div class="wishes" id="wishes"></div>
+        <div class="gallery" id="gallery"></div>
+        <div class="quote" id="quote"></div>
+        <div class="sign" id="sign"></div>
+        <div class="btns" id="btns">
+          <small>nhấn phím Space để rắc thêm hoa đào ✿</small>
+        </div>
+      </div>
+    </div>
+    <div id="lb"><img alt="" /></div>
+    <audio id="bgMusic" loop preload="auto">
+      <source src="vo-tay(cut).mp3" type="audio/mpeg">
+    </audio>
+    <script>
+      const CFG = {
+        l1: "CHÚC BÉ CÓ NGÀY",
+        l2: "20/10 VUI VẺ NHA! MÃI YÊU BÉ 🌸",
+        name: "Bé",
+        intro:
+          "Chúc em luôn vui vẻ, gặp nhiều may mắn, không còn buồn phiền, mỗi ngày trôi qua đều là ngày hạnh phúc nhất 🌸",
+        wishes: [
+          ["🌸", "Luôn xinh đẹp"],
+          ["🌷", "Thật hạnh phúc"],
+          ["✨", "Bình yên"],
+          ["💮", "Được yêu thương"],
+        ],
+        quote:
+          "Cảm ơn em đã luôn dịu dàng với bản thân ",
+        sign: "— Người đi cùng anh suốt chặng đường qua 🌸",
+        // Ảnh đặt cùng thư mục với file này (hoặc dán link ảnh online).
+        // Để trống "" / [] nếu không dùng.
+        photo: "img/choi.jpg", // ảnh tròn chính phía trên tên (ảnh tạm — thay bằng ảnh thật)
+        gallery: ["img/catba.jpg","img/dixe.jpg","img/kiyeu.jpg"], // các ảnh polaroid nhỏ, vd: ["anh1.jpg", "anh2.jpg"]
+      };
+      const rnd = (a) =>
+        Array.isArray(a) || typeof a === "string"
+          ? a[Math.floor(Math.random() * a.length)]
+          : 0;
+      const R = (a, b) => Math.random() * (b - a) + a;
+      const $ = (id) => document.getElementById(id);
+
+      for (let i = 0; i < 60; i++) {
+        const s = document.createElement("div");
+        s.className = "star";
+        s.style.cssText = `left:${R(0, 100)}vw;top:${R(0, 100)}vh;animation-delay:${R(0, 3)}s`;
+        document.body.appendChild(s);
+      }
+
+      $("name").textContent = CFG.name;
+      $("sign").textContent = CFG.sign;
+      $("quote").textContent = CFG.quote;
+      $("wishes").innerHTML = CFG.wishes
+        .map(
+          (w) =>
+             `<div class="w"><i>${w[0]}</i><b>${w[1]}</b></div>`,
+        )
+        .join("");
+
+      if (CFG.photo) {
+        const p = $("pimg");
+        p.onload = () => {
+          $("photo").hidden = false;
+          $("big").style.display = "none";
+        };
+        p.src = CFG.photo;
+      }
+      (CFG.gallery || []).forEach((src) => {
+        const d = document.createElement("div");
+        d.className = "pol";
+        d.style.setProperty("--r", R(-7, 7) + "deg");
+        const img = document.createElement("img");
+        img.onerror = () => d.remove(); // thiếu file thì tự ẩn
+        img.onclick = (e) => {
+          e.stopPropagation();
+          $("lb").firstChild.src = src;
+          $("lb").classList.add("show");
+        };
+        img.src = src;
+        d.appendChild(img);
+        $("gallery").appendChild(d);
+      });
+      $("lb").onclick = () => $("lb").classList.remove("show");
+
+      // ===== Minigame: hứng hoa đào =====
+      // Mỗi bông hoa hứng được sẽ hiện thêm 1 chữ của lời chúc,
+      // hứng phải sâu 🐛 thì mất 1 chữ. Đủ chữ thì mở thiệp.
+      const slots = [];
+      function build(el, text) {
+        // gom chữ theo từng từ để không bị xuống dòng giữa từ
+        text.split(" ").forEach((word, wi) => {
+          if (wi > 0) {
+            const sp = document.createElement("span");
+            sp.className = "slot sp";
+            sp.textContent = " ";
+            el.appendChild(sp);
+          }
+          const wd = document.createElement("span");
+          wd.className = "word";
+          [...word].forEach((c) => {
+            const s = document.createElement("span");
+            s.className = "slot";
+            s.textContent = c;
+            wd.appendChild(s);
+            slots.push(s);
+          });
+          el.appendChild(wd);
+        });
+      }
+      build($("l1"), CFG.l1);
+      build($("l2"), CFG.l2);
+      const GOAL = slots.length;
+      $("goal").textContent = GOAL;
+      $("hint").textContent = `✦ Hứng đủ ${GOAL} bông hoa đào để mở lời chúc ✦`;
+
+      let W = innerWidth,
+        H = innerHeight,
+        started = false,
+        done = false,
+        got = 0,
+        bx = W / 2,
+        items = [],
+        spawnT = 0,
+        last = 0;
+      const keys = {};
+      addEventListener("resize", () => {
+        W = innerWidth;
+        H = innerHeight;
+        moveBasket(bx);
+      });
+
+      function start() {
+        if (started) return;
+        started = true;
+        // "mở khóa" nhạc ngay lúc bấm (iPhone/Safari chỉ cho phát nhạc sau
+        // thao tác của người dùng), rồi dừng lại — thắng game mới phát thật
+        const bgMusic = $("bgMusic");
+        bgMusic.muted = true;
+        bgMusic
+          .play()
+          .then(() => {
+            if (!done) bgMusic.pause();
+            bgMusic.muted = false;
+            bgMusic.currentTime = 0;
+          })
+          .catch(() => (bgMusic.muted = false));
+        $("btn").style.display = "none";
+        $("sub").style.display = "none";
+        $("hint").textContent = "Di chuột hoặc chạm để di chuyển giỏ 🧺";
+        $("hud").classList.add("on");
+        $("basket").classList.add("on");
+        cur.style.opacity = 0;
+        moveBasket(bx);
+        last = performance.now();
+        requestAnimationFrame(loop);
+      }
+      function moveBasket(x) {
+        bx = Math.max(30, Math.min(W - 30, x));
+        $("basket").style.left = bx + "px";
+      }
+      function spawn() {
+        const bug = got > 2 && Math.random() < 0.16;
+        const e = document.createElement("div");
+        e.className = "drop";
+        e.textContent = bug ? "🐛" : rnd(["🌸", "🌸", "🌸", "💮"]);
+        e.style.fontSize = (bug ? 30 : R(28, 40)) + "px";
+        document.body.appendChild(e);
+        items.push({
+          el: e,
+          bug,
+          x: R(30, W - 30),
+          y: -40,
+          vy: R(2.2, 3.4) * Math.max(0.8, H / 800) * (1 + (got / GOAL) * 0.6),
+          t: R(0, 6),
+          rot: R(0, 360),
+          vr: R(-3, 3),
+        });
+      }
+      function loop() {
+        if (done) return;
+        const now = performance.now();
+        const dt = Math.max(0, Math.min(2, (now - last) / 16.67));
+        last = now;
+        if (keys.ArrowLeft) moveBasket(bx - 9 * dt);
+        if (keys.ArrowRight) moveBasket(bx + 9 * dt);
+        spawnT -= dt * 16.67;
+        if (spawnT <= 0) {
+          spawn();
+          spawnT = R(450, 800);
+        }
+        const b = $("basket").getBoundingClientRect();
+        items = items.filter((it) => {
+          it.y += it.vy * dt;
+          it.t += 0.05 * dt;
+          it.rot += it.vr * dt;
+          const x = it.x + Math.sin(it.t) * 18;
+          if (it.y > b.top + 10 && it.y < b.bottom && Math.abs(x - bx) < 42) {
+            it.el.remove();
+            catchIt(it, x);
+            return false;
+          }
+          if (it.y > H + 50) {
+            it.el.remove();
+            return false;
+          }
+          it.el.style.transform = `translate(${x}px,${it.y}px) translate(-50%,-50%) rotate(${it.rot}deg)`;
+          return true;
+        });
+        if (done) {
+          // thắng rồi: dọn hết hoa/sâu còn đang rơi
+          items.forEach((it) => it.el.remove());
+          items = [];
+          return;
+        }
+        requestAnimationFrame(loop);
+      }
+      function catchIt(it, x) {
+        if (done) return;
+        if (it.bug) {
+          if (got > 0) slots[--got].classList.remove("ok");
+          const bk = $("basket");
+          bk.classList.remove("shake");
+          void bk.offsetWidth;
+          bk.classList.add("shake");
+          floatText(x, it.y, "Ôi, sâu! −1 🐛");
+        } else {
+          slots[got].classList.add("ok");
+          sparkle(slots[got]);
+          got++;
+          floatText(x, it.y, "+1 🌸");
+          for (let i = 0; i < 3; i++) burst(bx, it.y, "✦", 10);
+        }
+        $("count").textContent = got;
+        $("bar").firstChild.style.width = (got / GOAL) * 100 + "%";
+        if (got === GOAL) win();
+      }
+      function floatText(x, y, txt) {
+        const t = document.createElement("div");
+        t.className = "pop-txt";
+        t.textContent = txt;
+        t.style.left = x + "px";
+        t.style.top = y + "px";
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 900);
+      }
+      function win() {
+        done = true;
+        $("skipBox").style.display = "none";
+        const bgMusic = $("bgMusic");
+        bgMusic.muted = false;
+        bgMusic.volume = 0.1;
+        bgMusic.play().catch((err) => {
+          console.log("Không thể phát nhạc:", err);
+        });
+        $("basket").classList.remove("on");
+        $("hud").classList.remove("on");
+        $("hint").textContent = "Hoàn thành rồi! 🌸";
+        heartStorm();
+        setTimeout(showCard, 1800);
+      }
+      $("btn").onclick = (e) => {
+        e.stopPropagation();
+        start();
+      };
+      $("stage").addEventListener("click", start);
+      addEventListener("pointerdown", (e) => {
+        if (started && !done) moveBasket(e.clientX);
+      });
+
+      function sparkle(el) {
+        const r = el.getBoundingClientRect();
+        for (let i = 0; i < 4; i++)
+          burst(r.left + r.width / 2, r.top + r.height / 2, "✦", 10);
+      }
+      function burst(x, y, ch, size) {
+        const b = document.createElement("div");
+        b.className = "burst";
+        b.textContent = ch;
+        b.style.cssText += `left:${x}px;top:${y}px;font-size:${size + R(0, 10)}px;color:#f48fb1;--bx:${R(-70, 70)}px;--by:${R(-70, 70)}px`;
+        document.body.appendChild(b);
+        setTimeout(() => b.remove(), 900);
+      }
+      const HEARTS = ["🌸", "🌸", "🌸", "💮", "✿", "❀", "🌸", "🌷"];
+      function heart() {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.textContent = rnd(HEARTS);
+        const d = R(5, 11);
+        h.style.cssText += `left:${R(0, 100)}vw;font-size:${R(16, 44)}px;animation-duration:${d}s;--dx:${R(-80, 80)}px;--rot:${R(-40, 40)}deg;opacity:${R(0.6, 1)}`;
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), d * 1000);
+      }
+      function heartStorm() {
+        for (let i = 0; i < 40; i++) setTimeout(heart, i * 60);
+      }
+
+      function showCard() {
+        $("stage").classList.add("hide");
+        $("card").classList.add("show");
+        setInterval(heart, 280);
+        heartStorm();
+        let i = 0;
+        setTimeout(function type() {
+          $("msg").textContent = CFG.intro.slice(0, ++i);
+          if (i < CFG.intro.length) setTimeout(type, 40);
+          else {
+            document
+              .querySelectorAll(".w")
+              .forEach((w, k) =>
+                setTimeout(() => w.classList.add("on"), k * 350),
+              );
+            document
+              .querySelectorAll(".pol")
+              .forEach((p, k) =>
+                setTimeout(() => p.classList.add("on"), 1400 + k * 300),
+              );
+            setTimeout(() => $("quote").classList.add("on2"), 1700);
+            setTimeout(() => $("sign").classList.add("on2"), 2500);
+            setTimeout(() => ($("btns").style.opacity = 1), 3000);
+          }
+        }, 1200);
+      }
+      addEventListener("keydown", (e) => {
+        if (e.code === "Space") {
+          e.preventDefault();
+          if (!started) start();
+          else if (done) heartStorm();
+        }
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+          keys[e.key] = true;
+          if (!started) start();
+        }
+      });
+      addEventListener("keyup", (e) => (keys[e.key] = false));
+      const cur = document.createElement("div");
+      cur.id = "cur";
+      cur.innerHTML = "<span>🌸</span>";
+      document.body.appendChild(cur);
+      let lt = 0;
+      addEventListener("pointermove", (e) => {
+        if (started && !done) {
+          moveBasket(e.clientX); // đang chơi: chuột điều khiển giỏ
+          return;
+        }
+        cur.style.transform = `translate(${e.clientX}px,${e.clientY}px) translate(-50%,-50%)`;
+        cur.style.opacity = 1;
+        const n = performance.now();
+        if (n - lt < 50) return;
+        lt = n;
+        const t = document.createElement("div");
+        t.className = "trail";
+        t.textContent = rnd(["🌸", "✿", "❀", "💮"]);
+        t.style.cssText += `left:${e.clientX}px;top:${e.clientY}px;font-size:${R(10, 20)}px;--tx:${R(-30, 30)}px`;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 1100);
+      });
+      document.addEventListener("mouseleave", () => (cur.style.opacity = 0));
+      $("card").addEventListener("click", (e) => {
+        if (e.target.tagName !== "BUTTON") {
+          for (let i = 0; i < 6; i++)
+            burst(e.clientX, e.clientY, rnd(HEARTS), 18);
+        }
+      });
+
+      // ===== Nút bỏ qua minigame =====
+      $("skipBtn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (done) return;
+        started = true;
+        got = GOAL;
+        slots.forEach((s) => s.classList.add("ok"));
+        items.forEach((it) => it.el.remove());
+        items = [];
+        $("btn").style.display = "none";
+        $("sub").style.display = "none";
+        cur.style.opacity = 0;
+        win();
+      });
+    </script>
+  </body>
+</html>
